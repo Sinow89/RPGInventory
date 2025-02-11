@@ -38,6 +38,8 @@ int main(){
 
         // Format the debug information into a string
         for(int i = 0; i < TOTAL_ITEMS; i++){
+            sprintf(item_text, "Name - Gold - Rarity - Kilo");
+            DrawText(item_text, 200, 50, 20, DARKGRAY);
             sprintf(item_text, "Item: %s, %.2d, %d, %.2f", item[i].name, item[i].gold, item[i].rarity, item[i].kilo);
             DrawText(item_text, 200, 100 + (i * 30), 20, DARKGRAY);
         }
