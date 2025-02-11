@@ -10,24 +10,63 @@ typedef struct item_t{
     int gold;
     int rarity;
     float kilo;
+    int received_order;
 } item_t;
+
+
+void insertionSort(item_t arr[], int n)
+{
+    int i, j;
+    item_t key;
+    for (i = 1; i < n; i++) {
+        key = arr[i];
+        j = i - 1;
+
+        while (j >= 0 && arr[j].received_order > key.received_order) {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = key;
+    }
+}
+
+void insertionSortDec(item_t arr[], int n)
+{
+    int i, j;
+    item_t key;
+
+    for (i = 1; i < n; i++) {
+        key = arr[i];
+        j = i - 1;
+
+        // Change comparison to flip the order (descending)
+        while (j >= 0 && arr[j].received_order < key.received_order) {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = key;
+    }
+}
+
 
 int main(){
 
     SetTargetFPS(60);
     InitWindow(800, 600, "RPG - Inventory");
 
+    bool key_pressed = true;
+
     item_t item[TOTAL_ITEMS] = {
-        {"Dagger", 10, 1, 25.0f},
-        {"Sword", 50, 5, 50.0f}, 
-        {"Armor", 150, 5, 50.0f}, 
-        {"Stick", 25, 5, 50.0f},
-        {"Apple", 5, 5, 50.0f},
-        {"Bread", 10, 5, 50.0f},
-        {"Silver Sword", 250, 5, 50.0f},
-        {"Black Sword", 500, 5, 50.0f},
-        {"Gold Sword", 1000, 5, 50.0f},
-        {"Platinum Sword", 5000, 5, 50.0f}
+        {"Dagger", 10, 1, 25.0f, 3},
+        {"Sword", 50, 5, 50.0f, 1}, 
+        {"Armor", 150, 5, 50.0f, 2}, 
+        {"Stick", 25, 5, 50.0f, 4},
+        {"Apple", 5, 5, 50.0f, 10},
+        {"Bread", 10, 5, 50.0f, 9},
+        {"Silver Sword", 250, 5, 50.0f, 8},
+        {"Black Sword", 500, 5, 50.0f, 5,},
+        {"Gold Sword", 1000, 5, 50.0f, 6},
+        {"Platinum Sword", 5000, 5, 50.0f, 7}
     };
 
     while(!WindowShouldClose()){
@@ -38,13 +77,23 @@ int main(){
 
         // Format the debug information into a string
         for(int i = 0; i < TOTAL_ITEMS; i++){
-            sprintf(item_text, "Name - Gold - Rarity - Kilo");
-            DrawText(item_text, 200, 50, 20, DARKGRAY);
-            sprintf(item_text, "Item: %s, %.2d, %d, %.2f", item[i].name, item[i].gold, item[i].rarity, item[i].kilo);
+            sprintf(item_text, "Name - Gold - Rarity - Kilo - Newest");
+            DrawText(item_text, 200, 50, 20, WHITE);
+            sprintf(item_text, "Press S to sort Newest and again for Oldest");
+            DrawText(item_text, 200, 500, 20, WHITE);
+            sprintf(item_text, "Item: %s, %.2d, %d, %.2f, %d", item[i].name, item[i].gold, item[i].rarity, item[i].kilo, item[i].received_order);
             DrawText(item_text, 200, 100 + (i * 30), 20, DARKGRAY);
         }
 
-
+        if (IsKeyPressed(KEY_S)) {
+            if (key_pressed) {
+                insertionSort(item, 10);
+            } else {
+                insertionSortDec(item, 10);
+            }
+            key_pressed = !key_pressed;
+        }
+        
         EndDrawing();
     }
     CloseWindow();
