@@ -16,28 +16,6 @@ typedef struct item_t{
     int received_order;
 } item_t;
 
-item_t* hash_table[TOTAL_ITEMS];
-
-void init_hash_table(){
-    for (int i =0; i < TOTAL_ITEMS; i++){
-        hash_table[i] = NULL;
-    }
-}
-void print_table(){
-    for (int i =0; i < TOTAL_ITEMS; i++){
-        if(hash_table[i] == NULL){
-            printf("\t%i\t---\n", i);
-        }
-        else{
-            printf("\t%i\t%s\n", i, hash_table[i]->name);
-        }
-    }
-}
-
-void insert_hash_table(){
-
-}
-
 unsigned int hash(char *name){
     int length = strnlen(name, MAX_NAME);
     unsigned int hash_value = 0;
@@ -86,6 +64,34 @@ void insertionSort(item_t *arr, int n, bool descending)
     }
 }
 
+item_t* hash_table[TOTAL_ITEMS];
+
+void init_hash_table(){
+    for (int i =0; i < TOTAL_ITEMS; i++){
+        hash_table[i] = NULL;
+    }
+}
+void print_table(){
+    for (int i =0; i < TOTAL_ITEMS; i++){
+        if(hash_table[i] == NULL){
+            printf("\t%i\t---\n", i);
+        }
+        else{
+            printf("\t%i\t%s\n", i, hash_table[i]->name);
+        }
+    }
+}
+
+bool insert_hash_table(item_t *t){
+    if(t == NULL) return false;
+    int index = j_hash(t->name);
+    if(hash_table[index] != NULL){
+        return false;
+    }
+    hash_table[index] = t;
+    return true;
+}
+
 int main(){
 
     SetTargetFPS(60);
@@ -94,6 +100,15 @@ int main(){
     bool descending = true;
 
     init_hash_table();
+    print_table();
+
+    item_t sword = {.name="Sword", .gold=40, .rarity=1, .kilo=25.0F, .received_order=3};
+    item_t silver_sword = {.name="Silver Sword", .gold=50, .rarity=2, .kilo=35.0F, .received_order=4};
+    item_t gold_sword = {.name="Gold Sword", .gold=60, .rarity=3, .kilo=45.0F, .received_order=5};
+
+    insert_hash_table(&sword);
+    insert_hash_table(&silver_sword);
+    insert_hash_table(&gold_sword);
     print_table();
 
     item_t item[TOTAL_ITEMS] = {
