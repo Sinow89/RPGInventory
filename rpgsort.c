@@ -81,7 +81,13 @@ int main(){
     printf("Dagger=> %u\n", hash(item[0].name));
     printf("Sword=> %u\n", hash(item[1].name));
     printf("Armor=> %u\n", hash(item[2].name));
-
+    printf("Stick=> %u\n", hash(item[3].name));
+    printf("Apple=> %u\n", hash(item[4].name));
+    printf("Bread=> %u\n", hash(item[5].name));
+    printf("Silver Sword=> %u\n", hash(item[6].name));
+    printf("Black Sword=> %u\n", hash(item[7].name));
+    printf("Gold Sword=> %u\n", hash(item[8].name));
+    
     while(!WindowShouldClose()){
         BeginDrawing();
         ClearBackground(BLACK);
