@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include "raylib.h"
 #include "raymath.h"
 
 #define TOTAL_ITEMS 10
-#define MAX_NAME 255
+#define MAX_NAME 256
 
 typedef struct item_t{
     char name[MAX_NAME];
@@ -15,14 +16,34 @@ typedef struct item_t{
     int received_order;
 } item_t;
 
+
+
+// item_t* hash_table[TOTAL_ITEMS];
+
 unsigned int hash(char *name){
     int length = strnlen(name, MAX_NAME);
     unsigned int hash_value = 0;
     for (int i = 0; i < length; i++){
         hash_value += name[i];
+        hash_value = (hash_value * name[i] % 31);
     }
     return hash_value;
 }
+
+uint32_t j_hash(char* name) {
+    size_t i = 0;
+    int length = strnlen(name, MAX_NAME);
+    uint32_t hash = 0;
+    while (i != length) {
+      hash += name[i++];
+      hash += hash << 10;
+      hash ^= hash >> 6;
+    }
+    hash += hash << 3;
+    hash ^= hash >> 11;
+    hash += hash << 15;
+return hash % MAX_NAME  ;
+  }
 
 void insertionSort(item_t arr[], int n)
 {
@@ -78,15 +99,16 @@ int main(){
         {"Platinum Sword", 5000, 5, 50.0f, 7}
     };
 
-    printf("Dagger=> %u\n", hash(item[0].name));
-    printf("Sword=> %u\n", hash(item[1].name));
-    printf("Armor=> %u\n", hash(item[2].name));
-    printf("Stick=> %u\n", hash(item[3].name));
-    printf("Apple=> %u\n", hash(item[4].name));
+    printf("Dagger=> %u\n", j_hash(item[0].name));
+    printf("Sword=> %u\n", j_hash(item[1].name));
+    printf("Armor=> %u\n", j_hash(item[2].name));
+    printf("Stick=> %u\n", j_hash(item[3].name));
+    printf("Apple=> %u\n", j_hash(item[4].name));
     printf("Bread=> %u\n", hash(item[5].name));
     printf("Silver Sword=> %u\n", hash(item[6].name));
     printf("Black Sword=> %u\n", hash(item[7].name));
     printf("Gold Sword=> %u\n", hash(item[8].name));
+    printf("Platinum Sword=> %u\n", hash(item[9].name));
     
     while(!WindowShouldClose()){
         BeginDrawing();
