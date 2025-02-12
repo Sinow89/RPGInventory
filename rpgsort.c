@@ -16,9 +16,27 @@ typedef struct item_t{
     int received_order;
 } item_t;
 
+item_t* hash_table[TOTAL_ITEMS];
 
+void init_hash_table(){
+    for (int i =0; i < TOTAL_ITEMS; i++){
+        hash_table[i] = NULL;
+    }
+}
+void print_table(){
+    for (int i =0; i < TOTAL_ITEMS; i++){
+        if(hash_table[i] == NULL){
+            printf("\t%i\t---\n", i);
+        }
+        else{
+            printf("\t%i\t%s\n", i, hash_table[i]->name);
+        }
+    }
+}
 
-// item_t* hash_table[TOTAL_ITEMS];
+void insert_hash_table(){
+
+}
 
 unsigned int hash(char *name){
     int length = strnlen(name, MAX_NAME);
@@ -42,10 +60,10 @@ uint32_t j_hash(char* name) {
     hash += hash << 3;
     hash ^= hash >> 11;
     hash += hash << 15;
-return hash % MAX_NAME  ;
+return hash % TOTAL_ITEMS;
   }
 
-void insertionSort(item_t arr[], int n)
+void insertionSort(item_t *arr, int n, bool descending)
 {
     int i, j;
     item_t key;
@@ -53,27 +71,16 @@ void insertionSort(item_t arr[], int n)
         key = arr[i];
         j = i - 1;
 
-        while (j >= 0 && arr[j].received_order > key.received_order) {
-            arr[j + 1] = arr[j];
-            j = j - 1;
-        }
-        arr[j + 1] = key;
-    }
-}
-
-void insertionSortDec(item_t arr[], int n)
-{
-    int i, j;
-    item_t key;
-
-    for (i = 1; i < n; i++) {
-        key = arr[i];
-        j = i - 1;
-
-        // Change comparison to flip the order (descending)
-        while (j >= 0 && arr[j].received_order < key.received_order) {
-            arr[j + 1] = arr[j];
-            j = j - 1;
+        if (descending) {
+            while (j >= 0 && arr[j].received_order < key.received_order) {
+                arr[j + 1] = arr[j];
+                j = j - 1;
+            }
+        } else {
+            while (j >= 0 && arr[j].received_order > key.received_order) {
+                arr[j + 1] = arr[j];
+                j = j - 1;
+            }
         }
         arr[j + 1] = key;
     }
@@ -84,10 +91,13 @@ int main(){
     SetTargetFPS(60);
     InitWindow(800, 600, "RPG - Inventory");
 
-    bool key_pressed = true;
+    bool descending = true;
+
+    init_hash_table();
+    print_table();
 
     item_t item[TOTAL_ITEMS] = {
-        {"Dagger", 10, 1, 25.0f, 3},
+        {"Sword", 10, 1, 25.0f, 3},
         {"Sword", 50, 5, 50.0f, 1}, 
         {"Armor", 150, 5, 50.0f, 2}, 
         {"Stick", 25, 5, 50.0f, 4},
@@ -127,12 +137,8 @@ int main(){
         }
 
         if (IsKeyPressed(KEY_S)) {
-            if (key_pressed) {
-                insertionSort(item, 10);
-            } else {
-                insertionSortDec(item, 10);
-            }
-            key_pressed = !key_pressed;
+            descending = !descending;
+            insertionSort(item, 10, descending);
         }
         
         EndDrawing();
