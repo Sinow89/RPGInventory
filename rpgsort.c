@@ -87,10 +87,25 @@ void print_sorted_table(item_t *sorted_items, int count) {
     int y_offset = 50;
     for (int i = 0; i < count; i++) {
         sprintf(item_text, "Name - Gold - Kilo - Rarity - Newest");
-        DrawText(item_text, 200, 10, 20, DARKGRAY);
+        DrawText(item_text, 400, 10, 20, DARKGRAY);
         sprintf(item_text, "Item: %s, %d, %.2f, %d, %d", sorted_items[i].name, sorted_items[i].gold, sorted_items[i].kilo, sorted_items[i].rarity,sorted_items[i].received_order);
-        DrawText(item_text, 200, y_offset, 20, DARKGRAY);
+        DrawText(item_text, 400, y_offset, 20, DARKGRAY);
         y_offset += 30;
+    }
+}
+
+void print_table(){
+    for (int i =0; i < TOTAL_ITEMS; i++){
+        sprintf(item_text, "Hash Table");
+        DrawText(item_text, 50, 10, 20, WHITE);
+        if(hash_table[i] == NULL){
+            sprintf(item_text, "Item: ---");
+            DrawText(item_text, 50, 50 + (i * 20), 20, DARKGRAY);
+        }
+        else{
+            sprintf(item_text, "Item: %s, %.2d, %d, %.2f, %d", hash_table[i]->name, hash_table[i]->gold, hash_table[i]->rarity, hash_table[i]->kilo, hash_table[i]->received_order);
+            DrawText(item_text, 50, 50 + (i * 20), 20, DARKGRAY);
+        }
     }
 }
 
@@ -99,8 +114,9 @@ int main(){
     SetTargetFPS(60);
     InitWindow(800, 800, "RPG - Inventory");
 
-    item_t sorted_items[10];
+    item_t sorted_items[TOTAL_ITEMS];
     int item_count = 0;
+    // bool start = true;
     bool descending = false;
 
     init_hash_table();
@@ -130,14 +146,23 @@ int main(){
     while(!WindowShouldClose()){
         BeginDrawing();
         ClearBackground(BLACK);
-                
+           
+        print_table();
+
         print_sorted_table(sorted_items, item_count);
         
         if (IsKeyPressed(KEY_S)) {
+            
             descending = !descending;
             extract_items(sorted_items, &item_count); // Extract items from hash_table
             insertionSort(sorted_items, item_count, descending); // Sort items
         }
+
+        sprintf(item_text, "Press S to create and sort ascen and descen");
+        DrawText(item_text, 200, 500, 20, WHITE);
+
+
+
         EndDrawing();
     }
     CloseWindow();
