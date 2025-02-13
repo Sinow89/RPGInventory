@@ -16,16 +16,6 @@ typedef struct item_t{
     int received_order;
 } item_t;
 
-unsigned int hash(char *name){
-    int length = strnlen(name, MAX_NAME);
-    unsigned int hash_value = 0;
-    for (int i = 0; i < length; i++){
-        hash_value += name[i];
-        hash_value = (hash_value * name[i] % 31);
-    }
-    return hash_value;
-}
-
 uint32_t j_hash(char* name) {
     size_t i = 0;
     int length = strnlen(name, MAX_NAME);
@@ -73,7 +63,6 @@ void init_hash_table(){
     }
 }
 
-
 void print_table(){
     for (int i =0; i < TOTAL_ITEMS; i++){
         if(hash_table[i] == NULL){
@@ -81,8 +70,7 @@ void print_table(){
             DrawText(item_text, 200, 50 + (i * 20), 20, DARKGRAY);
         }
         else{
-            // printf("\t%i\t%s\n", i, hash_table[i]->name);
-            sprintf(item_text, "Item: %s", hash_table[i]->name);
+            sprintf(item_text, "Item: %s, %.2d, %d, %.2f, %d", hash_table[i]->name, hash_table[i]->gold, hash_table[i]->rarity, hash_table[i]->kilo, hash_table[i]->received_order);
             DrawText(item_text, 200, 50 + (i * 20), 20, DARKGRAY);
         }
     }
@@ -129,23 +117,6 @@ int main(){
     insert_hash_table(&spear);
     insert_hash_table(&halberd);
     
-
-    // item_t item[TOTAL_ITEMS] = {
-    //     {"Sword", 10, 1, 25.0f, 3},
-    //     {"Sword", 50, 5, 50.0f, 1}, 
-    //     {"Armor", 150, 5, 50.0f, 2}, 
-    //     {"Stick", 25, 5, 50.0f, 4},
-    //     {"Apple", 5, 5, 50.0f, 10},
-    //     {"Bread", 10, 5, 50.0f, 9},
-    //     {"Silver Sword", 250, 5, 50.0f, 8},
-    //     {"Black Sword", 500, 5, 50.0f, 5,},
-    //     {"Gold Sword", 1000, 5, 50.0f, 6},
-    //     {"Platinum Sword", 5000, 5, 50.0f, 7}
-    // };
-
-  
-    
-
     while(!WindowShouldClose()){
         BeginDrawing();
         ClearBackground(BLACK);
@@ -153,16 +124,6 @@ int main(){
         char item_text[256];
 
         print_table();
-
-        // Format the debug information into a string
-        // for(int i = 0; i < TOTAL_ITEMS; i++){
-        //     sprintf(item_text, "Name - Gold - Rarity - Kilo - Newest");
-        //     DrawText(item_text, 200, 50, 20, WHITE);
-        //     sprintf(item_text, "Press S to sort Newest and again for Oldest");
-        //     DrawText(item_text, 200, 500, 20, DARKGRAY);
-        //     sprintf(item_text, "Item: %s, %.2d, %d, %.2f, %d", item[i].name, item[i].gold, item[i].rarity, item[i].kilo, item[i].received_order);
-        //     DrawText(item_text, 200, 100 + (i * 30), 20, DARKGRAY);
-        // }
 
         // if (IsKeyPressed(KEY_S)) {
         //     descending = !descending;
