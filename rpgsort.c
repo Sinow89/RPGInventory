@@ -128,9 +128,9 @@ void print_sorted_table(item_t *sorted_items, int count) {
     int y_offset = 50;
     for (int i = 0; i < count; i++) {
         sprintf(item_text, "Name - Gold - Kilo - Rarity - Newest");
-        DrawText(item_text, 350, 10, 20, DARKGRAY);
+        DrawText(item_text, 450, 10, 20, DARKGRAY);
         sprintf(item_text, "Item: %-15s %5d %8.2f %5d %5d", sorted_items[i].name, sorted_items[i].gold, sorted_items[i].kilo, sorted_items[i].rarity,sorted_items[i].received_order);
-        DrawText(item_text, 350, y_offset, 20, DARKGRAY);
+        DrawText(item_text, 400, y_offset, 20, DARKGRAY);
         y_offset += 30;
     }
 }
