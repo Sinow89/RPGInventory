@@ -86,6 +86,8 @@ void extract_items(item_t *arr, int *count) {
 void print_sorted_table(item_t *sorted_items, int count) {
     int y_offset = 50;
     for (int i = 0; i < count; i++) {
+        sprintf(item_text, "Name - Gold - Kilo - Rarity - Newest");
+        DrawText(item_text, 200, 10, 20, DARKGRAY);
         sprintf(item_text, "Item: %s, %d, %.2f, %d, %d", sorted_items[i].name, sorted_items[i].gold, sorted_items[i].kilo, sorted_items[i].rarity,sorted_items[i].received_order);
         DrawText(item_text, 200, y_offset, 20, DARKGRAY);
         y_offset += 30;
@@ -97,7 +99,7 @@ int main(){
     SetTargetFPS(60);
     InitWindow(800, 800, "RPG - Inventory");
 
-    item_t sorted_items[10]; // Temporary storage for sorting
+    item_t sorted_items[10];
     int item_count = 0;
     bool descending = false;
 
