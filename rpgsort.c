@@ -136,17 +136,17 @@ void print_sorted_table(item_t *sorted_items, int count) {
 }
 
 void print_table(){
+    sprintf(item_text, "Hash Table");
+    DrawText(item_text, 50, 10, 20, WHITE);
     for (int i =0; i < TOTAL_ITEMS; i++){
-        sprintf(item_text, "Hash Table");
-        DrawText(item_text, 50, 10, 20, WHITE);
         if(hash_table[i] == NULL){
             sprintf(item_text, "Item: ---");
             DrawText(item_text, 50, 50 + (i * 20), 20, DARKGRAY);
         }
         else{
             sprintf(item_text, "Item: %s, %.2d, %d, %.2f, %d", hash_table[i]->name, hash_table[i]->gold, hash_table[i]->rarity, hash_table[i]->kilo, hash_table[i]->received_order);
-            DrawText(item_text, 50, 50 + (i * 20), 20, DARKGRAY);
         }
+        DrawText(item_text, 50, 50 + (i * 20), 20, DARKGRAY);
     }
 }
 
