@@ -5,7 +5,7 @@
 #include "raylib.h"
 #include "raymath.h"
 
-#define TOTAL_ITEMS 100
+#define TOTAL_ITEMS 10
 #define MAX_NAME 256
 
 typedef struct item_t{
@@ -97,11 +97,17 @@ void init_hash_table(){
     }
 }
 
-bool insert_hash_table(item_t *t){
+bool insert_hash_table(item_t *t) {
     if(t == NULL) return false;
     int index = j_hash(t->name);
-    if(hash_table[index] != NULL){
-        return false;
+    int original_index = index;
+    
+    while (hash_table[index] != NULL) {
+        index = (index + 1) % TOTAL_ITEMS; 
+        
+        if (index == original_index) {
+            return false;
+        }
     }
     hash_table[index] = t;
     return true;
