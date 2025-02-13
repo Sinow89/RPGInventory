@@ -28,11 +28,10 @@ uint32_t j_hash(char* name) {
     hash += hash << 3;
     hash ^= hash >> 11;
     hash += hash << 15;
-return hash % TOTAL_ITEMS;
+    return hash % TOTAL_ITEMS;
   }
 
-void insertionSort(item_t *arr, int n, bool descending)
-{
+void insertionSort(item_t *arr, int n, bool descending){
     int i, j;
     item_t key;
     for (i = 1; i < n; i++) {
@@ -63,19 +62,6 @@ void init_hash_table(){
     }
 }
 
-void print_table(){
-    for (int i =0; i < TOTAL_ITEMS; i++){
-        if(hash_table[i] == NULL){
-            sprintf(item_text, "Item: ---");
-            DrawText(item_text, 200, 50 + (i * 20), 20, DARKGRAY);
-        }
-        else{
-            sprintf(item_text, "Item: %s, %.2d, %d, %.2f, %d", hash_table[i]->name, hash_table[i]->gold, hash_table[i]->rarity, hash_table[i]->kilo, hash_table[i]->received_order);
-            DrawText(item_text, 200, 50 + (i * 20), 20, DARKGRAY);
-        }
-    }
-}
-
 bool insert_hash_table(item_t *t){
     if(t == NULL) return false;
     int index = j_hash(t->name);
@@ -86,12 +72,34 @@ bool insert_hash_table(item_t *t){
     return true;
 }
 
+void extract_items(item_t *arr, int *count) {
+    *count = 0; // Reset count
+
+    for (int i = 0; i < TOTAL_ITEMS; i++) {
+        if (hash_table[i] != NULL) {
+            arr[*count] = *hash_table[i]; // Copy the item
+            (*count)++;
+        }
+    }
+}
+
+void print_sorted_table(item_t *sorted_items, int count) {
+    int y_offset = 50;
+    for (int i = 0; i < count; i++) {
+        sprintf(item_text, "Item: %s, %d, %.2f, %d, %d", sorted_items[i].name, sorted_items[i].gold, sorted_items[i].kilo, sorted_items[i].rarity,sorted_items[i].received_order);
+        DrawText(item_text, 200, y_offset, 20, DARKGRAY);
+        y_offset += 30;
+    }
+}
+
 int main(){
 
     SetTargetFPS(60);
-    InitWindow(800, 600, "RPG - Inventory");
+    InitWindow(800, 800, "RPG - Inventory");
 
-    bool descending = true;
+    item_t sorted_items[10]; // Temporary storage for sorting
+    int item_count = 0;
+    bool descending = false;
 
     init_hash_table();
 
@@ -120,16 +128,14 @@ int main(){
     while(!WindowShouldClose()){
         BeginDrawing();
         ClearBackground(BLACK);
-
-        char item_text[256];
-
-        print_table();
-
-        // if (IsKeyPressed(KEY_S)) {
-        //     descending = !descending;
-        //     insertionSort(item, 10, descending);
-        // }
+                
+        print_sorted_table(sorted_items, item_count);
         
+        if (IsKeyPressed(KEY_S)) {
+            descending = !descending;
+            extract_items(sorted_items, &item_count); // Extract items from hash_table
+            insertionSort(sorted_items, item_count, descending); // Sort items
+        }
         EndDrawing();
     }
     CloseWindow();
