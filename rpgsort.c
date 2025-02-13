@@ -53,6 +53,70 @@ void insertionSort(item_t *arr, int n, bool descending){
     }
 }
 
+void insertionSortGold(item_t *arr, int n, bool descending){
+    int i, j;
+    item_t key;
+    for (i = 1; i < n; i++) {
+        key = arr[i];
+        j = i - 1;
+
+        if (descending) {
+            while (j >= 0 && arr[j].gold < key.gold) {
+                arr[j + 1] = arr[j];
+                j = j - 1;
+            }
+        } else {
+            while (j >= 0 && arr[j].gold > key.gold) {
+                arr[j + 1] = arr[j];
+                j = j - 1;
+            }
+        }
+        arr[j + 1] = key;
+    }
+}
+void insertionSortKilo(item_t *arr, int n, bool descending){
+    int i, j;
+    item_t key;
+    for (i = 1; i < n; i++) {
+        key = arr[i];
+        j = i - 1;
+
+        if (descending) {
+            while (j >= 0 && arr[j].kilo < key.kilo) {
+                arr[j + 1] = arr[j];
+                j = j - 1;
+            }
+        } else {
+            while (j >= 0 && arr[j].kilo > key.kilo) {
+                arr[j + 1] = arr[j];
+                j = j - 1;
+            }
+        }
+        arr[j + 1] = key;
+    }
+}
+void insertionSortRarity(item_t *arr, int n, bool descending){
+    int i, j;
+    item_t key;
+    for (i = 1; i < n; i++) {
+        key = arr[i];
+        j = i - 1;
+
+        if (descending) {
+            while (j >= 0 && arr[j].rarity < key.rarity) {
+                arr[j + 1] = arr[j];
+                j = j - 1;
+            }
+        } else {
+            while (j >= 0 && arr[j].rarity > key.rarity) {
+                arr[j + 1] = arr[j];
+                j = j - 1;
+            }
+        }
+        arr[j + 1] = key;
+    }
+}
+
 item_t* hash_table[TOTAL_ITEMS];
 char item_text[256];
 
@@ -87,9 +151,9 @@ void print_sorted_table(item_t *sorted_items, int count) {
     int y_offset = 50;
     for (int i = 0; i < count; i++) {
         sprintf(item_text, "Name - Gold - Kilo - Rarity - Newest");
-        DrawText(item_text, 400, 10, 20, DARKGRAY);
-        sprintf(item_text, "Item: %s, %d, %.2f, %d, %d", sorted_items[i].name, sorted_items[i].gold, sorted_items[i].kilo, sorted_items[i].rarity,sorted_items[i].received_order);
-        DrawText(item_text, 400, y_offset, 20, DARKGRAY);
+        DrawText(item_text, 350, 10, 20, DARKGRAY);
+        sprintf(item_text, "Item: %-15s %5d %8.2f %5d %5d", sorted_items[i].name, sorted_items[i].gold, sorted_items[i].kilo, sorted_items[i].rarity,sorted_items[i].received_order);
+        DrawText(item_text, 350, y_offset, 20, DARKGRAY);
         y_offset += 30;
     }
 }
@@ -112,11 +176,10 @@ void print_table(){
 int main(){
 
     SetTargetFPS(60);
-    InitWindow(800, 800, "RPG - Inventory");
+    InitWindow(1200, 800, "RPG - Inventory");
 
     item_t sorted_items[TOTAL_ITEMS];
     int item_count = 0;
-    // bool start = true;
     bool descending = false;
 
     init_hash_table();
@@ -125,10 +188,10 @@ int main(){
     item_t dagger = {.name="Dagger", .gold=20, .rarity=1, .kilo=10.0F, .received_order=2};
     item_t sword = {.name="Sword", .gold=40, .rarity=1, .kilo=25.0F, .received_order=3};
     item_t silver_sword = {.name="Silver Sword", .gold=50, .rarity=2, .kilo=35.0F, .received_order=4};
-    item_t gold_sword = {.name="Gold Sword", .gold=60, .rarity=3, .kilo=45.0F, .received_order=5};
+    item_t gold_sword = {.name="Gold Sword", .gold=60, .rarity=5, .kilo=45.0F, .received_order=5};
     item_t battle_axe = {.name="Battle Axe", .gold=55, .rarity=2, .kilo=50.0F, .received_order=6};
     item_t bow = {.name="Bow", .gold=45, .rarity=2, .kilo=20.0F, .received_order=7};
-    item_t crossbow = {.name="Crossbow", .gold=65, .rarity=3, .kilo=30.0F, .received_order=8};
+    item_t crossbow = {.name="Crossbow", .gold=65, .rarity=4, .kilo=30.0F, .received_order=8};
     item_t spear = {.name="Spear", .gold=50, .rarity=2, .kilo=35.0F, .received_order=9};
     item_t halberd = {.name="Halberd", .gold=70, .rarity=3, .kilo=60.0F, .received_order=10};
 
@@ -150,18 +213,36 @@ int main(){
         print_table();
 
         print_sorted_table(sorted_items, item_count);
-        
+
+        if (IsKeyPressed(KEY_A)) {
+            descending = !descending;
+            extract_items(sorted_items, &item_count); // Extract items from hash_table
+            insertionSortGold(sorted_items, item_count, descending); // Sort items
+        }
         if (IsKeyPressed(KEY_S)) {
-            
+            descending = !descending;
+            extract_items(sorted_items, &item_count); // Extract items from hash_table
+            insertionSortKilo(sorted_items, item_count, descending); // Sort items
+        }
+        if (IsKeyPressed(KEY_D)) {
+            descending = !descending;
+            extract_items(sorted_items, &item_count); // Extract items from hash_table
+            insertionSortRarity(sorted_items, item_count, descending); // Sort items
+        }
+        if (IsKeyPressed(KEY_F)) {
             descending = !descending;
             extract_items(sorted_items, &item_count); // Extract items from hash_table
             insertionSort(sorted_items, item_count, descending); // Sort items
         }
 
-        sprintf(item_text, "Press S to create and sort ascen and descen");
+        sprintf(item_text, "Press A to sort ascen and descen gold");
+        DrawText(item_text, 200, 450, 20, WHITE);
+        sprintf(item_text, "Press S to sort ascen and descen kilo");
         DrawText(item_text, 200, 500, 20, WHITE);
-
-
+        sprintf(item_text, "Press D to sort ascen and descen rarity");
+        DrawText(item_text, 200, 550, 20, WHITE);
+        sprintf(item_text, "Press f to sort ascen and descen newest");
+        DrawText(item_text, 200, 600, 20, WHITE);
 
         EndDrawing();
     }
