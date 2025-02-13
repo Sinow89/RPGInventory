@@ -16,6 +16,31 @@ typedef struct item_t{
     int received_order;
 } item_t;
 
+typedef enum {
+    SORT_BY_ORDER,
+    SORT_BY_GOLD,
+    SORT_BY_RARITY,
+    SORT_BY_WEIGHT
+} SortCriteria;
+
+typedef int (*CompareFunc)(item_t, item_t, bool);
+
+int compareReceivedOrder(item_t a, item_t b, bool descending) {
+    return descending ? (a.received_order < b.received_order) : (a.received_order > b.received_order);
+}
+
+int compareGold(item_t a, item_t b, bool descending) {
+    return descending ? (a.gold < b.gold) : (a.gold > b.gold);
+}
+
+int compareKilo(item_t a, item_t b, bool descending) {
+    return descending ? (a.kilo < b.kilo) : (a.kilo > b.kilo);
+}
+
+int compareRarity(item_t a, item_t b, bool descending) {
+    return descending ? (a.rarity < b.rarity) : (a.rarity > b.rarity);
+}
+
 uint32_t j_hash(char* name) {
     size_t i = 0;
     int length = strnlen(name, MAX_NAME);
@@ -31,89 +56,35 @@ uint32_t j_hash(char* name) {
     return hash % TOTAL_ITEMS;
   }
 
-void insertionSort(item_t *arr, int n, bool descending){
+void insertionSort(item_t *arr, int n, bool descending, CompareFunc cmp){
     int i, j;
     item_t key;
     for (i = 1; i < n; i++) {
         key = arr[i];
         j = i - 1;
 
-        if (descending) {
-            while (j >= 0 && arr[j].received_order < key.received_order) {
-                arr[j + 1] = arr[j];
-                j = j - 1;
-            }
-        } else {
-            while (j >= 0 && arr[j].received_order > key.received_order) {
-                arr[j + 1] = arr[j];
-                j = j - 1;
-            }
+        while (j >= 0 && cmp(arr[j], key, descending)) {
+            arr[j + 1] = arr[j];
+            j = j - 1;
         }
         arr[j + 1] = key;
     }
 }
 
-void insertionSortGold(item_t *arr, int n, bool descending){
-    int i, j;
-    item_t key;
-    for (i = 1; i < n; i++) {
-        key = arr[i];
-        j = i - 1;
-
-        if (descending) {
-            while (j >= 0 && arr[j].gold < key.gold) {
-                arr[j + 1] = arr[j];
-                j = j - 1;
-            }
-        } else {
-            while (j >= 0 && arr[j].gold > key.gold) {
-                arr[j + 1] = arr[j];
-                j = j - 1;
-            }
-        }
-        arr[j + 1] = key;
-    }
-}
-void insertionSortKilo(item_t *arr, int n, bool descending){
-    int i, j;
-    item_t key;
-    for (i = 1; i < n; i++) {
-        key = arr[i];
-        j = i - 1;
-
-        if (descending) {
-            while (j >= 0 && arr[j].kilo < key.kilo) {
-                arr[j + 1] = arr[j];
-                j = j - 1;
-            }
-        } else {
-            while (j >= 0 && arr[j].kilo > key.kilo) {
-                arr[j + 1] = arr[j];
-                j = j - 1;
-            }
-        }
-        arr[j + 1] = key;
-    }
-}
-void insertionSortRarity(item_t *arr, int n, bool descending){
-    int i, j;
-    item_t key;
-    for (i = 1; i < n; i++) {
-        key = arr[i];
-        j = i - 1;
-
-        if (descending) {
-            while (j >= 0 && arr[j].rarity < key.rarity) {
-                arr[j + 1] = arr[j];
-                j = j - 1;
-            }
-        } else {
-            while (j >= 0 && arr[j].rarity > key.rarity) {
-                arr[j + 1] = arr[j];
-                j = j - 1;
-            }
-        }
-        arr[j + 1] = key;
+void sortItems(item_t *arr, int n, bool descending, SortCriteria criteria) {
+    switch (criteria) {
+        case SORT_BY_GOLD: 
+            insertionSort(arr, n, descending, compareGold); 
+            break;
+        case SORT_BY_RARITY: 
+            insertionSort(arr, n, descending, compareRarity); 
+            break;
+        case SORT_BY_WEIGHT: 
+            insertionSort(arr, n, descending, compareKilo); 
+            break;
+        default: 
+            insertionSort(arr, n, descending, compareReceivedOrder); 
+            break;
     }
 }
 
@@ -216,23 +187,23 @@ int main(){
 
         if (IsKeyPressed(KEY_A)) {
             descending = !descending;
-            extract_items(sorted_items, &item_count); // Extract items from hash_table
-            insertionSortGold(sorted_items, item_count, descending); // Sort items
+            extract_items(sorted_items, &item_count);
+            sortItems(sorted_items, item_count, descending, SORT_BY_GOLD);
         }
         if (IsKeyPressed(KEY_S)) {
             descending = !descending;
-            extract_items(sorted_items, &item_count); // Extract items from hash_table
-            insertionSortKilo(sorted_items, item_count, descending); // Sort items
+            extract_items(sorted_items, &item_count);
+            sortItems(sorted_items, item_count, descending, SORT_BY_WEIGHT);
         }
         if (IsKeyPressed(KEY_D)) {
             descending = !descending;
-            extract_items(sorted_items, &item_count); // Extract items from hash_table
-            insertionSortRarity(sorted_items, item_count, descending); // Sort items
+            extract_items(sorted_items, &item_count);
+            sortItems(sorted_items, item_count, descending, SORT_BY_RARITY);
         }
         if (IsKeyPressed(KEY_F)) {
             descending = !descending;
-            extract_items(sorted_items, &item_count); // Extract items from hash_table
-            insertionSort(sorted_items, item_count, descending); // Sort items
+            extract_items(sorted_items, &item_count);
+            sortItems(sorted_items, item_count, descending, SORT_BY_ORDER);
         }
 
         sprintf(item_text, "Press A to sort ascen and descen gold");
